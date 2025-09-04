@@ -1,0 +1,113 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Tarea {
+private:
+    string titulo;
+    string descripcion;
+    bool completada;
+
+public:
+    Tarea(string t, string d) : titulo(t), descripcion(d), completada(false) {}
+
+    void marcarComoCompletada() {
+        completada = true;
+    }
+
+    bool estaCompletada() const {
+        return completada;
+    }
+
+    string getTitulo() const {
+        return titulo;
+    }
+
+    string getDescripcion() const {
+        return descripcion;
+    }
+
+    void mostrarTarea(int indice) const {
+        cout << indice + 1 << ". [" << (completada ? "X" : " ") << "] "
+             << titulo << " - " << descripcion << endl;
+    }
+};
+
+class GestorTareas {
+private:
+    vector<Tarea> listaTareas;
+
+public:
+    void agregarTarea(const string &titulo, const string &descripcion) {
+        listaTareas.push_back(Tarea(titulo, descripcion));
+    }
+
+    void mostrarTareas() const {
+        if (listaTareas.empty()) {
+            cout << "No hay tareas en la lista." << endl;
+            return;
+        }
+        cout << "\n---- Lista de Tareas ----" << endl;
+        for (size_t i = 0; i < listaTareas.size(); i++) {
+            listaTareas[i].mostrarTarea(i);
+        }
+    }
+
+    void completarTarea(int indice) {
+        if (indice < 1 || indice > (int)listaTareas.size()) {
+            cout << "Indice invalido." << endl;
+            return;
+        }
+        listaTareas[indice - 1].marcarComoCompletada();
+        cout << "Tarea marcada como completada." << endl;
+    }
+};
+
+int main() {
+    GestorTareas gestor;
+    int opcion = 0;
+
+    do {
+        cout << "\n----- MENU -----" << endl;
+        cout << "1. Agregar tarea" << endl;
+        cout << "2. Mostrar tareas" << endl;
+        cout << "3. Completar tarea" << endl;
+        cout << "4. Salir" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+        cin.ignore(); 
+
+        switch (opcion) {
+            case 1: {
+                string titulo, descripcion;
+                cout << "Titulo de la tarea: ";
+                getline(cin, titulo);
+                cout << "Descripcion de la tarea: ";
+                getline(cin, descripcion);
+                gestor.agregarTarea(titulo, descripcion);
+                cout << "Tarea agregada con exito." << endl;
+                break;
+            }
+            case 2:
+                gestor.mostrarTareas();
+                break;
+            case 3: {
+                int indice;
+                cout << "Ingrese el numero de la tarea a completar: ";
+                cin >> indice;
+                gestor.completarTarea(indice);
+                break;
+            }
+            case 4:
+                cout << "Saliendo del programa..." << endl;
+                break;
+            default:
+                cout << "Opcion invalida, intente de nuevo." << endl;
+                break;
+        }
+    } while (opcion != 4);
+
+    return 0;
+}
